@@ -1,85 +1,69 @@
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Book My Stay Application
- * Demonstrates room initialization using abstraction and inheritance
+ * Use Case 3: Centralized Room Inventory Management
+ *
+ * Demonstrates centralized inventory management using HashMap
+ * with single source of truth and controlled updates.
  *
  * @author SnataKr
- * @version 2.0
+ * @version 3.1
  */
 
 public class BookMyStayApp {
 
-    // ABSTRACT CLASS
-    static abstract class Room {
-        String roomType;
-        int beds;
-        int size;
-        double price;
+    // UC3: ROOM INVENTORY USING HASHMAP
+    static class RoomInventory {
 
-        public Room(String roomType, int beds, int size, double price) {
-            this.roomType = roomType;
-            this.beds = beds;
-            this.size = size;
-            this.price = price;
+        private Map<String, Integer> inventory;
+
+        // Constructor: initialize room availability
+        public RoomInventory() {
+            inventory = new HashMap<>();
+            inventory.put("Single Room", 5);
+            inventory.put("Double Room", 3);
+            inventory.put("Suite Room", 2);
         }
 
-        public void displayRoomDetails() {
-            System.out.println("Room Type: " + roomType);
-            System.out.println("Beds: " + beds);
-            System.out.println("Size: " + size + " sq.ft");
-            System.out.println("Price per night: $" + price);
+        // Get availability for a room type
+        public int getAvailability(String roomType) {
+            return inventory.getOrDefault(roomType, 0);
         }
-    }
 
-    // SINGLE ROOM CLASS
-    static class SingleRoom extends Room {
-        public SingleRoom() {
-            super("Single Room", 1, 200, 100.0);
+        // Update availability for a room type
+        public void updateAvailability(String roomType, int count) {
+            inventory.put(roomType, count);
         }
-    }
 
-    // DOUBLE ROOM CLASS
-    static class DoubleRoom extends Room {
-        public DoubleRoom() {
-            super("Double Room", 2, 350, 180.0);
-        }
-    }
-
-    // SUITE ROOM CLASS
-    static class SuiteRoom extends Room {
-        public SuiteRoom() {
-            super("Suite Room", 3, 500, 300.0);
+        // Display current inventory
+        public void displayInventory() {
+            System.out.println("\n--- Current Room Inventory ---");
+            for (Map.Entry<String, Integer> entry : inventory.entrySet()) {
+                System.out.println(entry.getKey() + " : " + entry.getValue());
+            }
         }
     }
 
     // MAIN METHOD
     public static void main(String[] args) {
 
-        System.out.println("===== Book My Stay App v2.0 =====");
+        System.out.println("===== Book My Stay App v3.1 =====");
 
-        // Create room objects
-        Room single = new SingleRoom();
-        Room doubleRoom = new DoubleRoom();
-        Room suite = new SuiteRoom();
+        // Initialize centralized inventory
+        RoomInventory inventory = new RoomInventory();
 
-        // Static availability variables
-        int singleAvailable = 5;
-        int doubleAvailable = 3;
-        int suiteAvailable = 2;
+        // Display initial inventory
+        inventory.displayInventory();
 
-        System.out.println("\n--- Room Details ---");
+        // Example: Booking a Single Room
+        System.out.println("\nBooking a Single Room...");
+        int current = inventory.getAvailability("Single Room");
+        inventory.updateAvailability("Single Room", current - 1);
 
-        single.displayRoomDetails();
-        System.out.println("Available: " + singleAvailable);
-
-        System.out.println();
-
-        doubleRoom.displayRoomDetails();
-        System.out.println("Available: " + doubleAvailable);
-
-        System.out.println();
-
-        suite.displayRoomDetails();
-        System.out.println("Available: " + suiteAvailable);
+        // Display updated inventory
+        inventory.displayInventory();
 
         System.out.println("\nThank you for using Book My Stay!");
     }
